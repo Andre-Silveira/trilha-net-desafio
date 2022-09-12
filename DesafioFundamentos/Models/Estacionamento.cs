@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace DesafioFundamentos.Models
 {
     public class Estacionamento
@@ -15,11 +17,18 @@ namespace DesafioFundamentos.Models
         public void AdicionarVeiculo()
         {
             Console.WriteLine("Digite a placa do veículo para estacionar:");
-            this.veiculos.Add(Console.ReadLine());
+            string placa = Console.ReadLine();
+
+            if(ValidarPlaca(placa))
+                this.veiculos.Add(placa);
+            else
+                Console.WriteLine("Placa inválida.");
+        
         }
 
         public void RemoverVeiculo()
         {
+            ListarVeiculos();
             Console.WriteLine("Digite a placa do veículo para remover:");
             string placa = Console.ReadLine();
 
@@ -52,6 +61,21 @@ namespace DesafioFundamentos.Models
             else
             {
                 Console.WriteLine("Não há veículos estacionados.");
+            }
+        }
+
+        public bool ValidarPlaca(string placa){
+            if(string.IsNullOrWhiteSpace(placa) || placa.Length != 7)
+                return false;
+
+            placa.Replace("-", "").Trim().ToUpper();
+
+            if(char.IsLetter(placa,4)){
+                var placaPadraoNovo = new Regex("[a-zA-Z]{3}[0-9]{1}[a-zA-Z]{1}[0-9]{2}");
+                return placaPadraoNovo.IsMatch(placa);
+            }else{
+                var placaPadraoAntigo = new Regex("[a-zA-Z]{3}[0-9]{4}");
+                return placaPadraoAntigo.IsMatch(placa);
             }
         }
     }
